@@ -1,0 +1,85 @@
+//package com.aquanest.product;
+//
+//public class ProductRepository {
+//}
+
+
+
+
+
+
+
+
+package com.aquanest.product;
+
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface ProductRepository
+        extends JpaRepository<Product, Long> {
+
+    Optional<Product> findByIdAndActiveTrue(Long id);
+
+
+    @Query(
+            value = """
+            SELECT p
+            FROM Product p
+            JOIN p.category c
+            WHERE p.active = true
+              AND c.active = true
+              AND (
+                :search = ''
+                OR LOWER(p.name)
+                   LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(p.description)
+                   LIKE LOWER(CONCAT('%', :search, '%'))
+              )
+              AND (
+                :category = ''
+                OR LOWER(c.name) = LOWER(:category)
+              )
+            """,
+            countQuery = """
+            SELECT COUNT(p)
+            FROM Product p
+            JOIN p.category c
+            WHERE p.active = true
+              AND c.active = true
+              AND (
+                :search = ''
+                OR LOWER(p.name)
+                   LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(p.description)
+                   LIKE LOWER(CONCAT('%', :search, '%'))
+              )
+              AND (
+                :category = ''
+                OR LOWER(c.name) = LOWER(:category)
+              )
+            """
+    )
+    Page<Product> searchActiveProducts(
+            @Param("search") String search,
+            @Param("category") String category,
+            Pageable pageable
+    );
+
+
+    long countByActiveTrue();
+
+    @Query("""
+    SELECT COALESCE(SUM(p.stock), 0)
+    FROM Product p
+    WHERE p.active = true
+    """)
+    Long totalActiveStock();
+
+
+
+}
