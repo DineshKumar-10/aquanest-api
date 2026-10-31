@@ -463,6 +463,45 @@ public class SecurityConfig {
                         )
                 )
 
+//                .authorizeHttpRequests(auth -> auth
+//
+//                        .requestMatchers(
+//                                HttpMethod.OPTIONS,
+//                                "/**"
+//                        ).permitAll()
+//
+//                        .requestMatchers(
+//                                HttpMethod.GET,
+//                                "/api/health",
+//                                "/api/categories",
+//                                "/api/categories/**",
+//                                "/api/products",
+//                                "/api/products/**",
+//                                "/api/auth/csrf"
+//                        ).permitAll()
+//
+//                        .requestMatchers(
+//                                HttpMethod.POST,
+//                                "/api/auth/login"
+//                        ).permitAll()
+//
+//                        .requestMatchers(
+//                                HttpMethod.GET,
+//                                "/api/auth/me"
+//                        ).authenticated()
+//
+//                        .requestMatchers(
+//                                HttpMethod.POST,
+//                                "/api/auth/logout"
+//                        ).authenticated()
+//
+//                        .requestMatchers("/api/admin/**")
+//                        .hasRole("ADMIN")
+//
+//                        .anyRequest().denyAll()
+//                )
+
+
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
@@ -482,7 +521,8 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/api/auth/login"
+                                "/api/auth/login",
+                                "/api/orders/requests"
                         ).permitAll()
 
                         .requestMatchers(

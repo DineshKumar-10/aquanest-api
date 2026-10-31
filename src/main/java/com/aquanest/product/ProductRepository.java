@@ -14,6 +14,16 @@ package com.aquanest.product;
 
 import java.util.Optional;
 
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import jakarta.persistence.LockModeType;
+
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.repository.query.Param;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -70,6 +80,27 @@ public interface ProductRepository
             Pageable pageable
     );
 
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+    SELECT p
+    FROM Product p
+    WHERE p.id = :id
+    """)
+    Optional<Product> findByIdForUpdate(
+            @Param("id") Long id
+    );
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+    SELECT p
+    FROM Product p
+    WHERE p.id IN :ids
+    ORDER BY p.id
+    """)
+    List<Product> findAllByIdsForUpdate(
+            @Param("ids") Collection<Long> ids
+    );
 
     long countByActiveTrue();
 

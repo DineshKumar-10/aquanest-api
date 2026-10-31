@@ -108,8 +108,17 @@ public class AdminProductService {
         return toResponse(productRepository.save(product));
     }
 
+//    private Product findProduct(Long id) {
+//        return productRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND,
+//                        "Product not found."
+//                ));
+//    }
+
+
     private Product findProduct(Long id) {
-        return productRepository.findById(id)
+        return productRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Product not found."
